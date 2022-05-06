@@ -27,17 +27,25 @@ async function run() {
       res.send(products);
     });
 
-    app.get('/product/:id', async(req, res)=>{
+    app.get('/product/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: ObjectId(id)};
+      const query = { _id: ObjectId(id) };
       const product = await productCollection.findOne(query);
       res.send(product);
     });
 
     //post method
-    app.post('/product', async(req, res) =>{
+    app.post('/product', async (req, res) => {
       const newProduct = req.body;
       const result = await productCollection.insertOne(newProduct);
+      res.send(result);
+    })
+
+    //delete method
+    app.delete('/product/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = {_id: ObjectId(id)};
+      const result = await productCollection.deleteOne(query);
       res.send(result);
     })
 
