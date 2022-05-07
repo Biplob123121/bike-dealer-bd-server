@@ -20,6 +20,7 @@ async function run() {
     await client.connect();
     const productCollection = client.db('bikeDealerBD').collection('product');
 
+    //all product loading
     app.get('/product', async (req, res) => {
       const query = {};
       const cursor = productCollection.find(query);
@@ -27,6 +28,7 @@ async function run() {
       res.send(products);
     });
 
+    //single product loading
     app.get('/product/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -41,10 +43,25 @@ async function run() {
       res.send(result);
     })
 
+    //update method
+    app.put('/product/:id', async (req, res) => {
+      const id = req.params.id;
+      const updatedProduct = req.body;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          quantity: updatedProduct.quantity
+        }
+      };
+      const result = await productCollection.updateOne(filter, updatedDoc, options);
+      res.send(result);
+    })
+
     //delete method
     app.delete('/product/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: ObjectId(id)};
+      const query = { _id: ObjectId(id) };
       const result = await productCollection.deleteOne(query);
       res.send(result);
     })
